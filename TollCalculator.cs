@@ -1,6 +1,4 @@
-﻿using System;
-using System.Globalization;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 
 namespace TollFeeCalculator;
 
