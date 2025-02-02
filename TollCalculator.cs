@@ -19,7 +19,7 @@ public class TollCalculator
         this.options = options.Value;
     }
 
-    public int GetTollFee(Vehicle vehicle, DateTime[] dates)
+    public int GetTollFee(VehicleTypes vehicle, DateTime[] dates)
     {
         DateTime intervalStart = dates[0];
         int totalFee = 0;
@@ -49,15 +49,12 @@ public class TollCalculator
         return totalFee;
     }
 
-    private bool IsTollFreeVehicle(Vehicle vehicle)
+    private bool IsTollFreeVehicle(VehicleTypes vehicle)
     {
-        if (vehicle == null)
-            return false;
-        String vehicleType = vehicle.GetVehicleType();
-        return options.TollFreeVehicles.Contains(Enum.Parse<VehicleTypes>(vehicleType));
+        return options.TollFreeVehicles.Contains(vehicle);
     }
 
-    public int GetTollFee(DateTime date, Vehicle vehicle)
+    public int GetTollFee(DateTime date, VehicleTypes vehicle)
     {
         if (IsTollFreeDate(date) || IsTollFreeVehicle(vehicle))
             return 0;
@@ -77,7 +74,7 @@ public class TollCalculator
             && date.Minute <= t.MinuteRangeEnd;
     }
 
-    private Boolean IsTollFreeDate(DateTime date)
+    private bool IsTollFreeDate(DateTime date)
     {
         if (options.TollFreeDaysOfWeek.Contains(date.DayOfWeek))
             return true;
