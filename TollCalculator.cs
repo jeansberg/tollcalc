@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Globalization;
 using Microsoft.Extensions.Options;
 
@@ -95,7 +95,7 @@ public class TollCalculator
         int month = date.Month;
         int day = date.Day;
 
-        if (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday)
+        if (options.TollFreeDaysOfWeek.Contains(date.DayOfWeek))
             return true;
 
         if (year == 2013)
