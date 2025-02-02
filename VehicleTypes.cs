@@ -1,6 +1,6 @@
 namespace TollFeeCalculator;
 
-public enum TollFreeVehicles
+public enum VehicleTypes
 {
     Motorbike = 0,
     Tractor = 1,
@@ -8,4 +8,5 @@ public enum TollFreeVehicles
     Diplomat = 3,
     Foreign = 4,
     Military = 5,
+    Car = 6,
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using Microsoft.Extensions.Options;
 
@@ -56,7 +56,7 @@ public class TollCalculator
         if (vehicle == null)
             return false;
         String vehicleType = vehicle.GetVehicleType();
-        return options.TollFreeVehicles.Contains(Enum.Parse<TollFreeVehicles>(vehicleType));
+        return options.TollFreeVehicles.Contains(Enum.Parse<VehicleTypes>(vehicleType));
     }
 
     public int GetTollFee(DateTime date, Vehicle vehicle)
