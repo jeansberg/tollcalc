@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using Microsoft.Extensions.Options;
 
 namespace TollFeeCalculator;
 
@@ -12,6 +13,13 @@ public class TollCalculator
      * @param dates   - date and time of all passes on one day
      * @return - the total toll fee for that day
      */
+
+    private readonly TollCalculatorOptions options;
+
+    public TollCalculator(IOptions<TollCalculatorOptions> options)
+    {
+        this.options = options.Value;
+    }
 
     public int GetTollFee(Vehicle vehicle, DateTime[] dates)
     {
@@ -48,12 +56,7 @@ public class TollCalculator
         if (vehicle == null)
             return false;
         String vehicleType = vehicle.GetVehicleType();
-        return vehicleType.Equals(TollFreeVehicles.Motorbike.ToString())
-            || vehicleType.Equals(TollFreeVehicles.Tractor.ToString())
-            || vehicleType.Equals(TollFreeVehicles.Emergency.ToString())
-            || vehicleType.Equals(TollFreeVehicles.Diplomat.ToString())
-            || vehicleType.Equals(TollFreeVehicles.Foreign.ToString())
-            || vehicleType.Equals(TollFreeVehicles.Military.ToString());
+        return options.TollFreeVehicles.Contains(Enum.Parse<TollFreeVehicles>(vehicleType));
     }
 
     public int GetTollFee(DateTime date, Vehicle vehicle)
