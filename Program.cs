@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TollFeeCalculator;
@@ -23,10 +23,17 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var calculator = services.GetRequiredService<TollCalculator>();
-TollCalculatorOptions options = new();
-builder.Configuration.GetSection(nameof(TollCalculatorOptions)).Bind(options);
+    // Use the calculator instance as needed
 
-var calculator = new TollCalculator();
+    var result = calculator.GetTollFee(
+        VehicleTypes.Car,
+        [
+            new DateTime(2013, 1, 1, 8, 10, 0),
+            new DateTime(2013, 1, 1, 6, 0, 0),
+            new DateTime(2013, 1, 1, 6, 20, 0),
+            new DateTime(2013, 1, 1, 7, 10, 0),
+        ]
+    );
 }
 
 app.Run();
