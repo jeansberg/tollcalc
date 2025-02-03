@@ -21,31 +21,70 @@ public class TollCalculator
 
     public int GetTollFee(VehicleTypes vehicle, DateTime[] dates)
     {
-        DateTime intervalStart = dates[0];
-        int totalFee = 0;
-        foreach (DateTime date in dates)
+        if (dates.Length == 0)
         {
-            int nextFee = GetTollFee(date, vehicle);
-            int tempFee = GetTollFee(intervalStart, vehicle);
+            return 0;
+        }
 
-            var differenceInMinutes = (date - intervalStart).TotalMinutes;
+        var orderedDates = dates.OrderBy(d => d).ToArray();
+        var groupedDates = GetDateTimeGroupsByOverlap(orderedDates);
 
-            if (differenceInMinutes <= 60)
+        int totalFee = 0;
+
+        foreach (var group in groupedDates)
+        {
+            var fee = CalculateTollFeeForGroup(group, vehicle);
+            totalFee += fee;
+        }
+
+        return Math.Min(totalFee, 60);
+    }
+
+    private int CalculateTollFeeForGroup(List<DateTime> group, VehicleTypes vehicle)
+    {
+        var highestFee = 0;
+        foreach (var date in group)
+        {
+            var fee = GetTollFee(date, vehicle);
+            if (fee > highestFee)
             {
-                if (totalFee > 0)
-                    totalFee -= tempFee;
-                if (nextFee >= tempFee)
-                    tempFee = nextFee;
-                totalFee += tempFee;
+                highestFee = fee;
+            }
+        }
+
+        return highestFee;
+    }
+
+    private static List<List<DateTime>> GetDateTimeGroupsByOverlap(DateTime[] orderedDates)
+    {
+        var groupedDatesByOverlapPeriod = new List<List<DateTime>>();
+        var currentGroup = new List<DateTime> { };
+        for (int i = 0; i < orderedDates.Length; i++)
+        {
+            if (i == 0)
+            {
+                currentGroup.Add(orderedDates[i]);
+                groupedDatesByOverlapPeriod.Add(currentGroup);
             }
             else
             {
-                totalFee += nextFee;
+                var firstDateInGroup = currentGroup[0];
+                var currentDate = orderedDates[i];
+
+                if (currentDate.Subtract(firstDateInGroup).TotalMinutes <= 60)
+                {
+                    groupedDatesByOverlapPeriod.Last().Add(currentDate);
+                }
+                else
+                {
+                    var newGroup = new List<DateTime> { currentDate };
+                    groupedDatesByOverlapPeriod.Add(newGroup);
+                    currentGroup = newGroup;
+                }
             }
         }
-        if (totalFee > 60)
-            totalFee = 60;
-        return totalFee;
+
+        return groupedDatesByOverlapPeriod;
     }
 
     private bool IsTollFreeVehicle(VehicleTypes vehicle)
