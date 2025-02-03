@@ -17,10 +17,7 @@ public class TollCalculatorTests
     [Fact]
     public void GetTollFee_ShouldReturnFee_ForSinglePass()
     {
-        TollCalculatorOptions options = new();
-        _config.GetSection(nameof(TollCalculatorOptions)).Bind(options);
-
-        var sut = new TollCalculator(Options.Create(options));
+        var sut = CreateTollCalculator();
 
         sut.GetTollFee(VehicleTypes.Car, [new DateTime(2013, 1, 3, 08, 00, 00)]).Should().Be(13);
     }
@@ -28,10 +25,7 @@ public class TollCalculatorTests
     [Fact]
     public void GetTollFee_ShouldReturnHighestFee_ForMultiplePassesInOneHour()
     {
-        TollCalculatorOptions options = new();
-        _config.GetSection(nameof(TollCalculatorOptions)).Bind(options);
-
-        var sut = new TollCalculator(Options.Create(options));
+        var sut = CreateTollCalculator();
 
         sut.GetTollFee(
                 VehicleTypes.Car,
@@ -44,10 +38,7 @@ public class TollCalculatorTests
     [Fact]
     public void GetTollFee_ShouldReturnCumulativeFee_ForPassesDuringMultipleHours()
     {
-        TollCalculatorOptions options = new();
-        _config.GetSection(nameof(TollCalculatorOptions)).Bind(options);
-
-        var sut = new TollCalculator(Options.Create(options));
+        var sut = CreateTollCalculator();
 
         sut.GetTollFee(
                 VehicleTypes.Car,
@@ -96,10 +87,7 @@ public class TollCalculatorTests
     [InlineData(2013, 1, 6)]
     public void GetTollFee_ShouldReturnZero_ForTollFreeDayOfWeek(int year, int month, int day)
     {
-        TollCalculatorOptions options = new();
-        _config.GetSection(nameof(TollCalculatorOptions)).Bind(options);
-
-        var sut = new TollCalculator(Options.Create(options));
+        var sut = CreateTollCalculator();
 
         sut.GetTollFee(VehicleTypes.Car, [new DateTime(year, month, day, 00, 00, 00)])
             .Should()
@@ -126,10 +114,7 @@ public class TollCalculatorTests
     [InlineData(2013, 12, 31)]
     public void GetTollFee_ShouldReturnZero_ForTollFreeDate(int year, int month, int day)
     {
-        TollCalculatorOptions options = new();
-        _config.GetSection(nameof(TollCalculatorOptions)).Bind(options);
-
-        var sut = new TollCalculator(Options.Create(options));
+        var sut = CreateTollCalculator();
 
         sut.GetTollFee(VehicleTypes.Car, [new DateTime(year, month, day, 00, 00, 00)])
             .Should()
@@ -145,11 +130,17 @@ public class TollCalculatorTests
     [InlineData(VehicleTypes.Military)]
     public void GetTollFee_ShouldReturnZero_ForTollFreeVehicle(VehicleTypes vehicle)
     {
+        var sut = CreateTollCalculator();
+
+        sut.GetTollFee(vehicle, [new DateTime(2013, 1, 3, 08, 00, 00)]).Should().Be(0);
+    }
+
+    private TollCalculator CreateTollCalculator()
+    {
         TollCalculatorOptions options = new();
         _config.GetSection(nameof(TollCalculatorOptions)).Bind(options);
 
         var sut = new TollCalculator(Options.Create(options));
-
-        sut.GetTollFee(vehicle, [new DateTime(2013, 1, 3, 08, 00, 00)]).Should().Be(0);
+        return sut;
     }
 }
