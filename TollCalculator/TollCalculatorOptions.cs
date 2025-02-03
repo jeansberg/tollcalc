@@ -10,6 +10,8 @@ public sealed class TollCalculatorOptions
         TollFreeDaysOfWeek = new List<DayOfWeek>();
     }
 
+    public int CalculationTimeSpanInMinutes { get; set; }
+    public int MaxDailyFee { get; set; }
     public List<TollFeeLevel> TollFeeLevels { get; set; }
     public List<VehicleTypes> TollFreeVehicles { get; set; }
     public List<DateTime> TollFreeDates { get; set; }

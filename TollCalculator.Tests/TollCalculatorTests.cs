@@ -63,7 +63,7 @@ public class TollCalculatorTests
     }
 
     [Fact]
-    public void GetTollFee_ShouldReturnCumulativeFee_ForPassesDuringMultipleHoursCappedAt60()
+    public void GetTollFee_ShouldReturnCumulativeFee_ForPassesDuringMultipleHoursCappedAtMax()
     {
         TollCalculatorOptions options = new();
         _config.GetSection(nameof(TollCalculatorOptions)).Bind(options);
@@ -88,7 +88,7 @@ public class TollCalculatorTests
                 ]
             )
             .Should()
-            .Be(60);
+            .Be(options.MaxDailyFee);
     }
 
     [Theory]

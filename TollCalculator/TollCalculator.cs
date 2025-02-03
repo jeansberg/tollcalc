@@ -27,7 +27,7 @@ public class TollCalculator
         }
 
         var orderedDates = dates.OrderBy(d => d).ToArray();
-        var groupedDates = GetDateTimeGroupsByOverlap(orderedDates);
+        var groupedDates = GetDateTimeGroupsByOverlap(orderedDates, options);
 
         int totalFee = 0;
 
@@ -37,7 +37,7 @@ public class TollCalculator
             totalFee += fee;
         }
 
-        return Math.Min(totalFee, 60);
+        return Math.Min(totalFee, options.MaxDailyFee);
     }
 
     private int CalculateTollFeeForGroup(List<DateTime> group, VehicleTypes vehicle)
@@ -55,7 +55,10 @@ public class TollCalculator
         return highestFee;
     }
 
-    private static List<List<DateTime>> GetDateTimeGroupsByOverlap(DateTime[] orderedDates)
+    private static List<List<DateTime>> GetDateTimeGroupsByOverlap(
+        DateTime[] orderedDates,
+        TollCalculatorOptions _options
+    )
     {
         var groupedDatesByOverlapPeriod = new List<List<DateTime>>();
         var currentGroup = new List<DateTime> { };
@@ -71,7 +74,10 @@ public class TollCalculator
                 var firstDateInGroup = currentGroup[0];
                 var currentDate = orderedDates[i];
 
-                if (currentDate.Subtract(firstDateInGroup).TotalMinutes <= 60)
+                if (
+                    currentDate.Subtract(firstDateInGroup).TotalMinutes
+                    <= _options.CalculationTimeSpanInMinutes
+                )
                 {
                     groupedDatesByOverlapPeriod.Last().Add(currentDate);
                 }
