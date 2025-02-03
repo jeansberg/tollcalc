@@ -106,10 +106,9 @@ public class TollCalculator
 
     private static bool HasMatchingTollFee(DateTime date, TollFeeLevel t)
     {
-        return date.Hour >= t.HourRangeStart
-            && date.Hour <= t.HourRangeEnd
-            && date.Minute >= t.MinuteRangeStart
-            && date.Minute <= t.MinuteRangeEnd;
+        var timeSpanStart = new TimeSpan(t.HourRangeStart, t.MinuteRangeStart, 0);
+        var timeSpanEnd = new TimeSpan(t.HourRangeEnd, t.MinuteRangeEnd, 0);
+        return date.TimeOfDay >= timeSpanStart && date.TimeOfDay <= timeSpanEnd;
     }
 
     private bool IsTollFreeDate(DateTime date)
