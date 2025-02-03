@@ -23,17 +23,12 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var calculator = services.GetRequiredService<TollCalculator>();
-    // Use the calculator instance as needed
 
-    var result = calculator.GetTollFee(
-        VehicleTypes.Car,
-        [
-            new DateTime(2013, 1, 1, 8, 10, 0),
-            new DateTime(2013, 1, 1, 6, 0, 0),
-            new DateTime(2013, 1, 1, 6, 20, 0),
-            new DateTime(2013, 1, 1, 7, 10, 0),
-        ]
-    );
+    var input = CommandLineParser.ParseInput();
+
+    var result = calculator.GetTollFee(input.VehicleType, input.Dates);
+
+    Console.WriteLine($"The total fee for the day is {result} kr");
 }
 
 app.Run();
