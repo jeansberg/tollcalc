@@ -53,7 +53,7 @@ public static class CommandLineParser
             if (
                 DateTime.TryParseExact(
                     dateInput,
-                    "yyyy-MM-dd hh.mm",
+                    "yyyy-MM-dd HH.mm",
                     CultureInfo.GetCultureInfo("sv-SE"),
                     DateTimeStyles.None,
                     out var date

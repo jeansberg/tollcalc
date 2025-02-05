@@ -8,7 +8,7 @@ Run tests from /TollCalculator.Tests with *dotnet test*.
 
 Run application from /TollCalculator with *dotnet run*.
 
-Dates should be entered in the following format: *yyyy-MM-dd hh.mm*.
+Dates should be entered in the following format: *yyyy-MM-dd HH.mm*.
 
 ## Notes
 
